@@ -1,7 +1,9 @@
 package testPjt;
 
-public class Grandeur {
+import java.util.Scanner;
 
+public class Grandeur {
+Scanner scn = new Scanner(System.in);
     public String color;
     public String gear;
     public int price;
@@ -12,6 +14,12 @@ public class Grandeur {
 
     public void run() {
         System.out.println("-- run --");
+        System.out.print("색상을 입력해주세요: ");
+        color = scn.nextLine();
+        System.out.print("기어를 골라주세요(auto, manual): ");
+        gear = scn.nextLine();
+        System.out.print("가격을 입력해주세요: ");
+        price = scn.nextInt();
     }
 
     public void stop() {
