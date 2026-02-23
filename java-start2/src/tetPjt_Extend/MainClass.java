@@ -2,8 +2,12 @@ package tetPjt_Extend;
 
 public class MainClass {
     public static void main(String[] args) {
-        ChildClass child = new ChildClass();
-        child.parentFun();
-        child.childFun();
+//        FirstChildClass child = new FirstChildClass();
+//        child.parentFun();
+//        child.childFun();
+//
+//        child.makeJJajang();
+
+
     }
 }

@@ -12,4 +12,8 @@ public class ParentClass {
     private void privateFun() {
         System.out.println("privateFun()");
     }
+
+    public void makeJJajang() {
+        System.out.println("--makeJJajang()--");
+    }
 }
