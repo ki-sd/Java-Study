@@ -16,7 +16,7 @@ public class Hotel {
     }
 
     private void initializeRooms() {
-        RoomType[] types = {RoomType.Single, RoomType.Double, RoomType.Deluxe, RoomType.Suite};
+        RoomType[] types = {RoomType.SINGLE, RoomType.DOUBLE, RoomType.DELUXE, RoomType.SUITE};
         for(int i=1; i<5; i++){
             RoomType type = types[i-1];
             for(int j=1; j<7; j++){
@@ -26,7 +26,8 @@ public class Hotel {
 
         }
         for (Integer key : rooms.keySet()) {
-            System.out.println(key + "호: " + rooms.get(key).getRoomType() + " (" + rooms.get(key).getRoomType().getDefaultPrice() + "원)");
+            Room room = rooms.get(key);
+            System.out.println(key + "호: " + room.getRoomType() + " (" + room.getFormattedPrice() + ")");
         }
     }
 }

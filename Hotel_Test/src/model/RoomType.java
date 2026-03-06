@@ -1,7 +1,7 @@
 package model;
 
 public enum RoomType {
-    Single(55000), Double(80000), Deluxe(100000), Suite(150000);
+    SINGLE(55000), DOUBLE(80000), DELUXE(100000), SUITE(150000);
 
     private final long defaultPrice;
 

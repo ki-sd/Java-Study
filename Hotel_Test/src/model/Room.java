@@ -13,6 +13,10 @@ public class Room {
         this.roomPrice = roomType.getDefaultPrice();
         this.isAvailable = true;
     }
+    public String getFormattedPrice() {
+        DecimalFormat df = new DecimalFormat("###,###");
+        return df.format(this.roomPrice) + "원";
+    }
 
     public RoomType getRoomType() {
         return roomType;

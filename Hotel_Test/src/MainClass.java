@@ -1,7 +1,14 @@
+import java.util.Scanner;
 import Service.Hotel;
 
 public class MainClass {
     public static void main(String[] args){
-    new Hotel();
+    Scanner sc = new Scanner(System.in);
+    Hotel hotel = new Hotel();
+    boolean running = true;
+
+    while (running){
+
+    }
     }
 }
