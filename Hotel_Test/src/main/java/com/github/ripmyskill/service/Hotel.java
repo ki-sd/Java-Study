@@ -1,7 +1,7 @@
-package Service;
+package main.java.com.github.ripmyskill.service;
 
-import model.Room;
-import model.RoomType;
+import main.java.com.github.ripmyskill.model.Room;
+import main.java.com.github.ripmyskill.model.RoomType;
 
 import java.util.Map;
 import java.util.TreeMap;

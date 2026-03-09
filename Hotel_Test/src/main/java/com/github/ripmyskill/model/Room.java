@@ -1,4 +1,4 @@
-package model;
+package main.java.com.github.ripmyskill.model;
 import java.text.DecimalFormat;
 
 public class Room {

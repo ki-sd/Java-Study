@@ -1,5 +1,7 @@
+package main.java.com.github.ripmyskill;
+
 import java.util.Scanner;
-import Service.Hotel;
+import main.java.com.github.ripmyskill.service.Hotel;
 
 public class MainClass {
     public static void main(String[] args){

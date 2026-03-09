@@ -1,4 +1,4 @@
-package model;
+package main.java.com.github.ripmyskill.model;
 
 public enum RoomType {
     SINGLE(55000), DOUBLE(80000), DELUXE(100000), SUITE(150000);
