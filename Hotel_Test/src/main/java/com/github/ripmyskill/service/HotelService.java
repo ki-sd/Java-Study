@@ -1,10 +1,13 @@
 package com.github.ripmyskill.service;
 
-import com.github.ripmyskill.model.Room;
-import com.github.ripmyskill.model.RoomType;
+import com.github.ripmyskill.model.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+
 import org.fusesource.jansi.Ansi;
 import static org.fusesource.jansi.Ansi.Color.*;
 import static org.fusesource.jansi.Ansi.ansi;
@@ -78,6 +81,30 @@ public class HotelService {
                 ansi().fg(RED).a("예약됨 ").reset() +
                 ansi().fg(YELLOW).a("청소중").reset());
         System.out.println("=".repeat(102));
+    }
+    private Map<String, Reservation> reservations = new HashMap<>();
+
+    public void reserveRoom(int roomNo, User user) {
+        Room room = rooms.get(roomNo);
+
+        if (room == null) {
+            System.err.println("존재하지 않는 객실 번호입니다.");
+            return;
+        }
+        if (room.getRoomStatus() != RoomStatus.AVAILABLE) {
+            System.out.println("이미 예약되었거나 사용 불가능한 객실입니다.");
+            return;
+        }
+
+        String rId = "R" + System.currentTimeMillis();
+        Reservation newReservation = new Reservation(rId, user, room, null);
+
+        reservations.put(rId, newReservation);
+        room.setRoomStatus(RoomStatus.OCCUPIED);
+
+        System.out.println(ansi().fg(GREEN).a(roomNo+"번 객실의 예약이 완료되었습니다.").fg(CYAN).a(" 예약번호:"+rId).reset());
+
+
     }
 
     public Room findRoom(int roomNo) {

@@ -31,10 +31,17 @@ public class Main {
                         if (currentUser == null) System.err.println("잘못된 아이디 혹은 비밀번호 입니다.");
                     }
                     case 2 -> {
+                        System.out.println("회원가입을 시작합니다.");
                         System.out.print("아이디를 입력해주세요:"); String id = sc.nextLine();
                         System.out.print("비밀번호를 입력해주세요:"); String pw = sc.nextLine();
                         System.out.print("성함을 입력해주세요:"); String name = sc.nextLine();
-                        System.out.print("핸드폰 번호를 입력해주세요:"); String phone = sc.nextLine();
+                        System.out.print("전화 번호를 입력해주세요(예:010-1234-5678):"); String phoneNumber = sc.nextLine();
+
+                        if(id.isEmpty() || pw.isEmpty()) {
+                            System.err.println("아이디와 비밀번호는 필수 입력 사항입니다.");
+                            continue;
+                        }else
+                            userService.signUp(id,pw,name,phoneNumber);
                     }
                     case 3 -> {
                         System.out.println("시스템을 종료합니다.");
@@ -50,7 +57,13 @@ public class Main {
 
                 switch (choice) {
                     case 1 -> hotel.showRoomGrid();
-                    case 2 -> System.out.println("예약 메뉴 구현 예정");
+                    case 2 -> {
+                        hotel.showRoomGrid();
+                        int roomNo = getUserInput("예약할 객실 번호를 입력하세요:");
+                        if (roomNo != -1) {
+                            hotel.reserveRoom(roomNo, currentUser);
+                        }
+                    }
                     case 3 -> System.out.println("예약 관리 메뉴 구현 예정");
                     case 4 -> {
                         currentUser = null;
