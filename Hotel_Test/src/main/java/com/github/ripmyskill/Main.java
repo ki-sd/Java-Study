@@ -64,7 +64,7 @@ public class Main {
                             hotel.reserveRoom(roomNo, currentUser);
                         }
                     }
-                    case 3 -> System.out.println("예약 관리 메뉴 구현 예정");
+                    case 3 -> hotel.showMyReservations(currentUser);
                     case 4 -> {
                         currentUser = null;
                         System.out.println("로그아웃 되었습니다.");
@@ -82,7 +82,7 @@ public class Main {
             return Integer.parseInt(sc.nextLine());
         } catch (NumberFormatException e) {
             System.err.println("[오류] 숫자만 입력 가능합니다.");
-            return -1; // 잘못된 입력임을 나타내는 값
+            return -1; // 잘못된 입력
         }
     }
 }

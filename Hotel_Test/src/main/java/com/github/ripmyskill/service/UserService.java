@@ -13,6 +13,7 @@ public class UserService {
         users.put("test", new User("test","1234","테스트","010-1234-5678"));
     }
 
+    //회원가입
     public void signUp(String id, String pw, String name, String phone) {
         if(users.containsKey(id)) {
             System.err.println("이미 존재하는 아이디입니다.");
@@ -22,6 +23,7 @@ public class UserService {
         System.out.println("\n[회원가입 완료] " + name + "님, 환영합니다.");
     }
 
+    //로그인
     public User login(String id, String pw) {
         User user = users.get(id);
         if (user != null && user.getPassword().equals(pw)) {

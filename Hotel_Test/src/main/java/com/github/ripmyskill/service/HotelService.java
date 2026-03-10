@@ -2,8 +2,6 @@ package com.github.ripmyskill.service;
 
 import com.github.ripmyskill.model.*;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -33,6 +31,7 @@ public class HotelService {
 
         }
 
+    //객실 정보
     public void showRoomGrid() {
         System.out.println("\n"+"=".repeat(102));
         System.out.println(" ".repeat(43)+"호텔 객실 현황판");
@@ -84,6 +83,7 @@ public class HotelService {
     }
     private Map<String, Reservation> reservations = new HashMap<>();
 
+    //예약
     public void reserveRoom(int roomNo, User user) {
         Room room = rooms.get(roomNo);
 
@@ -104,7 +104,21 @@ public class HotelService {
 
         System.out.println(ansi().fg(GREEN).a(roomNo+"번 객실의 예약이 완료되었습니다.").fg(CYAN).a(" 예약번호:"+rId).reset());
 
+    }
 
+    //예약 정보
+    public void showMyReservations(User currentUser) {
+        System.out.println(ansi().fg(CYAN).a("\n[ "+ currentUser.getName() + "님의 예약 내역 ]").reset());
+
+        boolean hasReservation = false;
+        for (Reservation res : reservations.values()) {
+            if (res.getUser().getUserId().equals(currentUser.getUserId())) {
+                System.out.println(res.getInfo());
+                hasReservation = true;
+            }
+        }
+        if (!hasReservation)
+            System.out.println("예약 내역이 없습니다.");
     }
 
     public Room findRoom(int roomNo) {
