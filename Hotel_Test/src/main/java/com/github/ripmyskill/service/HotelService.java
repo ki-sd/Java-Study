@@ -121,6 +121,25 @@ public class HotelService {
             System.out.println("예약 내역이 없습니다.");
     }
 
+    //예약 취소
+    public boolean cancelReservations(String rId, User currentUser) {
+        Reservation res = reservations.get(rId);
+
+        if(!isOwner(res, currentUser)) {
+            System.out.println(ansi().fg(RED).a("[error] 해당 예약 번호를 찾을 수 없습니다.").reset());
+            return false;
+        }
+
+        res.getRoom().setRoomStatus(RoomStatus.AVAILABLE);
+        reservations.remove(rId);
+        return true;
+    }
+
+    private boolean isOwner(Reservation res, User currentUser) {
+        if(res == null || currentUser==null) return false;
+        return res.getUser().getUserId().equals(currentUser.getUserId());
+    }
+
     public Room findRoom(int roomNo) {
         return rooms.get(roomNo);
     }

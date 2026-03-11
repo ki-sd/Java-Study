@@ -5,6 +5,11 @@ import java.util.Scanner;
 import com.github.ripmyskill.model.User;
 import com.github.ripmyskill.service.HotelService;
 import com.github.ripmyskill.service.UserService;
+import org.fusesource.jansi.Ansi;
+
+import static org.fusesource.jansi.Ansi.Color.GREEN;
+import static org.fusesource.jansi.Ansi.Color.RED;
+import static org.fusesource.jansi.Ansi.ansi;
 
 public class Main {
     private static Scanner sc = new Scanner(System.in);
@@ -64,7 +69,31 @@ public class Main {
                             hotel.reserveRoom(roomNo, currentUser);
                         }
                     }
-                    case 3 -> hotel.showMyReservations(currentUser);
+                    case 3 -> {
+                        hotel.showMyReservations(currentUser);
+                        choice = getUserInput("1.예약 취소  2.돌아가기\n선택:");
+                        if(choice==1) {
+                            System.out.print("취소할 예약 번호를 입력해주세요:");
+                            String rId = sc.nextLine();
+                            if(rId.trim().isEmpty()) {
+                                System.out.println("예약 번호를 입력해야 합니다.");
+                                continue;
+                            }
+                            boolean isSuccess = hotel.cancelReservations(rId, currentUser);
+
+                            if(isSuccess) {
+                                System.out.println(ansi().fg(GREEN).bold().a("성공적으로 취소되었습니다.").reset());
+                            } else {
+                                System.out.println(ansi().fg(RED).bold().a("취소 처리에 실패했습니다.").reset());
+                            }
+                        }
+                        else if(choice==2) {
+                            break;
+                        }
+                        else{
+                            System.err.println("잘못된 입력입니다.");
+                        }
+                    }
                     case 4 -> {
                         currentUser = null;
                         System.out.println("로그아웃 되었습니다.");
