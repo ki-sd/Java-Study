@@ -5,7 +5,6 @@ import java.util.Scanner;
 import com.github.ripmyskill.model.User;
 import com.github.ripmyskill.service.HotelService;
 import com.github.ripmyskill.service.UserService;
-import org.fusesource.jansi.Ansi;
 
 import static org.fusesource.jansi.Ansi.Color.GREEN;
 import static org.fusesource.jansi.Ansi.Color.RED;
@@ -22,7 +21,7 @@ public class Main {
 
         while (isRunning) {
             if (currentUser == null) {
-                // [1단계: 로그인 전]
+                // 1단계: 로그인 전
                 System.out.println("\n--- 호텔 예약 시스템 ---");
                 System.out.println("1. 로그인  2. 회원가입  3. 시스템 종료");
                 int choice = getUserInput("선택: ");
@@ -55,7 +54,7 @@ public class Main {
                     default -> System.err.println("잘못된 입력입니다!");
                 }
             } else {
-                // [2단계: 로그인 후]
+                // 2단계: 로그인 후
                 System.out.println("\n--- " + currentUser.getName() + "님 환영합니다 ---");
                 System.out.println("1. 객실 목록  2. 객실 예약  3. 내 예약 정보  4. 로그아웃");
                 int choice = getUserInput("선택: ");
