@@ -9,8 +9,8 @@ public class UserService {
     private Map<String, User> users = new HashMap<>();
 
     public UserService() {
-        users.put("admin", new User("admin","1234","관리자","010-0000-0000"));
-        users.put("test", new User("test","1234","테스트","010-1234-5678"));
+        users.put("admin", new User("admin","1234","관리자","010-0000-0000", true));
+        users.put("test", new User("test","1234","테스트","010-1234-5678", false));
     }
 
     //회원가입
@@ -19,7 +19,7 @@ public class UserService {
             System.err.println("이미 존재하는 아이디입니다.");
             return;
         }
-        users.put(id, new User(id, pw, name, phone));
+        users.put(id, new User(id, pw, name, phone, false));
         System.out.println("\n[회원가입 완료] " + name + "님, 환영합니다.");
     }
 

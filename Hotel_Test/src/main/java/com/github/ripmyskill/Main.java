@@ -6,8 +6,7 @@ import com.github.ripmyskill.model.User;
 import com.github.ripmyskill.service.HotelService;
 import com.github.ripmyskill.service.UserService;
 
-import static org.fusesource.jansi.Ansi.Color.GREEN;
-import static org.fusesource.jansi.Ansi.Color.RED;
+import static org.fusesource.jansi.Ansi.Color.*;
 import static org.fusesource.jansi.Ansi.ansi;
 
 public class Main {
@@ -54,50 +53,53 @@ public class Main {
                     default -> System.err.println("잘못된 입력입니다!");
                 }
             } else {
-                // 2단계: 로그인 후
-                System.out.println("\n--- " + currentUser.getName() + "님 환영합니다 ---");
-                System.out.println("1. 객실 목록  2. 객실 예약  3. 내 예약 정보  4. 로그아웃");
-                int choice = getUserInput("선택: ");
+                if (currentUser.isAdmin()) {
+                    System.out.println(ansi().fg(CYAN).bold().a("\n[관리자 모드로 접속했습니다]").reset());
 
-                switch (choice) {
-                    case 1 -> hotel.showRoomGrid();
-                    case 2 -> {
-                        hotel.showRoomGrid();
-                        int roomNo = getUserInput("예약할 객실 번호를 입력하세요:");
-                        if (roomNo != -1) {
-                            hotel.reserveRoom(roomNo, currentUser);
-                        }
-                    }
-                    case 3 -> {
-                        hotel.showMyReservations(currentUser);
-                        choice = getUserInput("1.예약 취소  2.돌아가기\n선택:");
-                        if(choice==1) {
-                            System.out.print("취소할 예약 번호를 입력해주세요:");
-                            String rId = sc.nextLine();
-                            if(rId.trim().isEmpty()) {
-                                System.out.println("예약 번호를 입력해야 합니다.");
-                                continue;
+                } else {
+                    // 2단계: 로그인 후
+                    System.out.println("\n--- " + currentUser.getName() + "님 환영합니다 ---");
+                    System.out.println("1. 객실 목록  2. 객실 예약  3. 내 예약 정보  4. 로그아웃");
+                    int choice = getUserInput("선택: ");
+
+                    switch (choice) {
+                        case 1 -> hotel.showRoomGrid();
+                        case 2 -> {
+                            hotel.showRoomGrid();
+                            int roomNo = getUserInput("예약할 객실 번호를 입력하세요:");
+                            if (roomNo != -1) {
+                                hotel.reserveRoom(roomNo, currentUser);
                             }
-                            boolean isSuccess = hotel.cancelReservations(rId, currentUser);
+                        }
+                        case 3 -> {
+                            hotel.showMyReservations(currentUser);
+                            choice = getUserInput("1.예약 취소  2.돌아가기\n선택:");
+                            if (choice == 1) {
+                                System.out.print("취소할 예약 번호를 입력해주세요:");
+                                String rId = sc.nextLine();
+                                if (rId.trim().isEmpty()) {
+                                    System.out.println("예약 번호를 입력해야 합니다.");
+                                    continue;
+                                }
+                                boolean isSuccess = hotel.cancelReservations(rId, currentUser);
 
-                            if(isSuccess) {
-                                System.out.println(ansi().fg(GREEN).bold().a("성공적으로 취소되었습니다.").reset());
+                                if (isSuccess) {
+                                    System.out.println(ansi().fg(GREEN).bold().a("성공적으로 취소되었습니다.").reset());
+                                } else {
+                                    System.out.println(ansi().fg(RED).bold().a("취소 처리에 실패했습니다.").reset());
+                                }
+                            } else if (choice == 2) {
+                                break;
                             } else {
-                                System.out.println(ansi().fg(RED).bold().a("취소 처리에 실패했습니다.").reset());
+                                System.err.println("잘못된 입력입니다.");
                             }
                         }
-                        else if(choice==2) {
-                            break;
+                        case 4 -> {
+                            currentUser = null;
+                            System.out.println("로그아웃 되었습니다.");
                         }
-                        else{
-                            System.err.println("잘못된 입력입니다.");
-                        }
+                        default -> System.err.println("잘못된 입력입니다!");
                     }
-                    case 4 -> {
-                        currentUser = null;
-                        System.out.println("로그아웃 되었습니다.");
-                    }
-                    default -> System.err.println("잘못된 입력입니다!");
                 }
             }
         }
