@@ -13,8 +13,8 @@ public class Main {
     private static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) {
-        HotelService hotel = new HotelService();
         UserService userService = new UserService();
+        HotelService hotel = new HotelService(userService);
         User currentUser = null; // 현재 로그인한 사용자 정보
         boolean isRunning = true;
 
@@ -55,6 +55,8 @@ public class Main {
             } else {
                 if (currentUser.isAdmin()) {
                     System.out.println(ansi().fg(CYAN).bold().a("\n[관리자 모드로 접속했습니다]").reset());
+                    boolean wantLogout = showAdminMenu(hotel);
+                    if (wantLogout) currentUser = null;
 
                 } else {
                     // 2단계: 로그인 후
@@ -104,6 +106,39 @@ public class Main {
             }
         }
     }
+
+    private static boolean showAdminMenu(HotelService hotel) {
+        System.out.println(ansi().fg(CYAN).bold().a("\n--- 관리자 메뉴 ---").reset());
+        System.out.println("1. 전체 예약 현황 조회 및 취소");
+        System.out.println("2. 총 매출 확인");
+        System.out.println("3. 객실 현황 보기");
+        System.out.println("4. 로그아웃");
+
+        int choice = getUserInput("선택: ");
+
+        switch (choice) {
+            case 1 -> {
+                hotel.showAllReservations();
+                int subChoice = getUserInput("\n1. 예약 강제 취소   2. 돌아가기\n선택: ");
+                if (subChoice == 1) {
+                    System.out.print("취소할 예약 번호를 입력하세요: ");
+                    String rId = sc.nextLine();
+                    if (!rId.trim().isEmpty()) {
+                        hotel.cancelReservationsAdmin(rId);
+                    }
+                }
+            }
+            case 2 -> hotel.showTotalSales();
+            case 3 -> hotel.showRoomGrid();
+            case 4 -> {
+                System.out.println("관리자 모드를 종료하고 로그아웃합니다.");
+                return true;
+            }
+            default -> System.err.println("잘못된 입력입니다.");
+        }
+        return false;
+    }
+
 
     // 입력 및 오류 예외처리
     private static int getUserInput(String prompt) {

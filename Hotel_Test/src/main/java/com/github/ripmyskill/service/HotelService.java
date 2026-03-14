@@ -1,8 +1,15 @@
 package com.github.ripmyskill.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.ripmyskill.model.*;
 
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -14,9 +21,12 @@ public class HotelService {
 
     private Map<Integer, Room> rooms;
 
-    public HotelService() {
+    public HotelService(UserService userService) {
+        this.mapper = new ObjectMapper();
+        this.mapper.registerModules(new JavaTimeModule());
         rooms = new TreeMap<>();
         initializeRooms();
+        loadReservationsFromJson(userService);
     }
 
     private void initializeRooms() {
@@ -97,11 +107,12 @@ public class HotelService {
         }
 
         String rId = "R" + System.currentTimeMillis();
-        Reservation newReservation = new Reservation(rId, user, room, null);
+        Reservation newReservation = new Reservation(rId, user, room, LocalDateTime.now());
 
         reservations.put(rId, newReservation);
         room.setRoomStatus(RoomStatus.OCCUPIED);
 
+        saveReservationsToJson();
         System.out.println(ansi().fg(GREEN).a(roomNo+"번 객실의 예약이 완료되었습니다.").fg(CYAN).a(" 예약번호:"+rId).reset());
 
     }
@@ -132,12 +143,91 @@ public class HotelService {
 
         res.getRoom().setRoomStatus(RoomStatus.AVAILABLE);
         reservations.remove(rId);
+        saveReservationsToJson();
         return true;
     }
 
     private boolean isOwner(Reservation res, User currentUser) {
         if(res == null || currentUser==null) return false;
         return res.getUser().getUserId().equals(currentUser.getUserId());
+    }
+
+
+    private final ObjectMapper mapper;
+
+    public void saveReservationsToJson() {
+        try {
+            List<ReservationData> dataList = reservations.values().stream().map(ReservationData::new).toList();
+            mapper.writeValue(new File("reservations.json"), dataList);
+            System.out.println("[시스템] 예약 정보 저장 완료");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadReservationsFromJson(UserService userService) {
+        File file = new File("reservations.json");
+        if (!file.exists()) return;
+        try {
+            List<ReservationData> dataList = mapper.readValue(file, new TypeReference<List<ReservationData>>() {});
+
+            for(ReservationData data : dataList) {
+                User user = userService.findUserById(data.getUserId());
+                Room room = findRoomByNumber(data.getRoomNumber());
+
+                if (user != null && room != null) {
+                    Reservation res = new Reservation(data.getId(), user, room, data.getDate());
+                    reservations.put(res.getReservationId(), res);
+                    room.setRoomStatus(RoomStatus.OCCUPIED);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Room findRoomByNumber(int roomNumber) {
+        return rooms.get(roomNumber);
+    }
+
+
+    //admin 메뉴
+    //모든 예약 내역 조회
+    public void showAllReservations() {
+        if (reservations.isEmpty()) {
+            System.out.println(ansi().fg(YELLOW).a("\n[안내] 현재 등록된 예약이 없습니다.").reset());
+            return;
+        }
+        System.out.println(ansi().fg(CYAN).bold().a("\n--- [전체 예약 명부] ---").reset());
+        for(Reservation res : reservations.values()) {
+            System.out.println(res.getInfo());
+        }
+        System.out.println(ansi().fg(CYAN).a("-".repeat(20)).reset());
+    }
+
+    //총 매출 계산 및 출력
+    public void showTotalSales() {
+        long total = 0;
+        for (Reservation res : reservations.values()) {
+            total += res.getRoom().getRoomPrice();
+        }
+        System.out.println(ansi().fg(MAGENTA).bold().a("\n[ 매출 통계 ]").reset());
+        System.out.println("현재까지 확정된 총 매출: " + String.format("%,d",total) + "원");
+    }
+
+    public boolean cancelReservationsAdmin(String rId) {
+        Reservation res = reservations.get(rId);
+
+        if(res == null) {
+            System.out.println(ansi().fg(RED).a("[error] 해당 예약 번호를 찾을 수 없습니다.").reset());
+            return false;
+        }
+
+        res.getRoom().setRoomStatus(RoomStatus.AVAILABLE);
+        reservations.remove(rId);
+        saveReservationsToJson();
+        System.out.println(ansi().fg(CYAN).bold().a("[관리자 권한] ").reset() + "예약 번호 " + rId + "가 강제 취소되었습니다.");
+        return true;
     }
 
     public Room findRoom(int roomNo) {

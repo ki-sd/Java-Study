@@ -7,18 +7,19 @@ public class Reservation {
     private String reservationId;
     private User user;
     private Room room;
-    private String reserveDate;
+    private LocalDateTime reserveDate;
 
-    public Reservation(String reservationId, User user, Room room, String reserveDate) {
+    public Reservation(String reservationId, User user, Room room, LocalDateTime reserveDate) {
         this.reservationId = reservationId;
         this.user = user;
         this.room = room;
-        this.reserveDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        this.reserveDate = (reserveDate != null) ? reserveDate : LocalDateTime.now();
     }
 
     //예약정보
     public String getInfo() {
         String formattedPrice = String.format("%, d", room.getRoomPrice());
+        String formattedDate = reserveDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
         return String.format(
                 "------------------------------------\n" +
@@ -49,7 +50,7 @@ public class Reservation {
     public Room getRoom() {
         return room;
     }
-    public String getReserveDate() {
+    public LocalDateTime getReserveDate() {
         return reserveDate;
     }
 }
